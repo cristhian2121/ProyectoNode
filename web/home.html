@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Node js</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this template -->
+    <link href="css/freelancer.min.css" rel="stylesheet">
+    <link href="css/test.css" rel="stylesheet">
+
+    <!--vue Js-->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!--Axios-->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+
+</head>
+
+<body id="page-top">
+
+    <!-- Navigation -->
+    <div>
+        <nav class="navbar navbar-expand-lg bg-secondary fixed-top text-uppercase" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand js-scroll-trigger" href="index.html">Gestion de empleados</a>
+                <button class="navbar-toggler navbar-toggler-right text-uppercase bg-primary text-white rounded" type="button"
+                    data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+    </div> <br /><br /><br /><br /><br />
+
+    <div class="content">
+        <div id="app">
+            <div class="row" v-if="load">
+                <div class="col-md-3"></div>
+                <div class="col-md-2">
+                    <div class="text-para">Seleccione una Sede: </div>
+                </div>
+                <div class="col-md-2">
+                    <el-select v-model="id_city" clearable placeholder="Sede">
+                        <el-option v-for="item in cities" 
+                            :key="item._id" 
+                            :label="item.nombre" 
+                            :value="item._id">
+                        </el-option>
+                    </el-select>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-primary" v-on:click="search">Buscar</button>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+            <br/>
+            <div v-if="viewEmployees">
+                <div v-for="item in employees" class="text-employee">
+                    <p>Nombre: {{item.nombres}} </p>
+                    <p>Documento: {{item.documentos}} </p>
+                    <p>Fecha de nacimiento: {{item.fechaNacimiento}} </p>
+                    <p>Cargo: {{item.cargo}} </p>
+                    <p>Observaciones:  </p>
+                        <p class="text-padd">N° Nota: {{item.observaciones[0].NroNota}} </p>
+                        <p class="text-padd">Nota : {{item.observaciones[0].nota}} </p>
+                    <hr>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+
+
+
+</body>
+
+</html>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            cities: null,
+            employees: null,
+            employeesAux: null,
+            viewEmployees: false,
+            load: false,
+            id_city: null
+        },
+        async mounted() {
+            await this.getCities();
+            await this.getEmployees();
+        },
+        methods: {
+            getCities: async function () {
+                await axios.get('http://localhost:3000/api/city').then(res => {
+                    this.cities = res.data;
+                    this.load = true;
+                })
+            },
+            getEmployees: async function(){
+                await axios.get('http://localhost:3000/api/employee').then(res =>{
+                    this.employeesAux =  res.data;
+                    console.log(this.employeesAux);
+                })
+            },
+            search: function(){
+                if(this.id_city){
+                    this.employees = this.employeesAux.filter(item => item.ciudad == this.id_city);
+                    if(this.employees.length > 0) this.viewEmployees = true;
+                }else{
+                    this.employees = [];
+                    this.viewEmployees = false;
+                }
+            }
+        }
+    });
+</script>
