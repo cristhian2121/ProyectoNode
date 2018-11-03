@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Node js</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this template -->
+    <link href="css/freelancer.min.css" rel="stylesheet">
+    <link href="css/test.css" rel="stylesheet">
+
+    <!--vue Js-->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!--Axios-->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+
+</head>
+
+<body id="page-top">
+
+    <!-- Navigation -->
+    <div>
+        <nav class="navbar navbar-expand-lg bg-secondary fixed-top text-uppercase" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand js-scroll-trigger" href="index.html">Gestion de empleados</a>
+                <button class="navbar-toggler navbar-toggler-right text-uppercase bg-primary text-white rounded" type="button"
+                    data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+    </div> <br /><br /><br /><br /><br />
+
+    <div class="container-fluid">
+        <div id="app">
+            <div class="row">
+                <div class="col-md-3">
+                    <div>
+                        <a href="home.html">
+                            <button type="button" class="btn btn-success">regresar</button>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                </div>
+                <div class="col-md-4">
+                    <div>
+                        <h3>Agregar Empleado</h3>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+            <br />
+            <div class="row" v-if="loader">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <div class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="name" class="col-lg-2 control-label">Nombre</label>
+                            <div class="col-lg-10">
+                                <input type="text" v-model="employee.nombres" class="form-control" id="name"
+                                    placeholder="Nombre del Empleado">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="doc" class="col-lg-2 control-label">Documento</label>
+                            <div class="col-lg-10">
+                                <input type="text" v-model="employee.documentos" class="form-control" id="doc"
+                                    placeholder="Nombre del Empleado">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="doc" class="col-lg-2 control-label">Ciudad</label>
+                            <div class="col-lg-10">
+                                <el-select v-model="city" clearable placeholder="Seleccionar">
+                                    <el-option
+                                      v-for="item in cities"
+                                      :key="item._id"
+                                      :label="item.nombre"
+                                      :value="item._id">
+                                    </el-option>
+                                  </el-select>
+                            </div>
+                        </div>
+
+
+                        
+                        <div class="form-group">
+                            <label for="born" class="col-lg-2 control-label">Fecha</label>
+                            <div class="col-lg-10">
+                                <input type="date" v-model="employee.fechaNacimiento" class="form-control" id="born"
+                                    placeholder="dd/mm/aaaa">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="position" class="col-lg-2 control-label">Cargo</label>
+                            <div class="col-lg-10">
+                                <input type="text" v-model="employee.cargo" class="form-control" id="position"
+                                    placeholder="Cargo">
+                            </div>
+                        </div>
+                        Observaciones:
+                        <div class="form-group">
+                            <label for="nnote" class="col-lg-2 control-label">N° de nota</label>
+                            <div class="col-lg-10">
+                                <input type="number" v-model="employee.observaciones[0].NroNota" class="form-control"
+                                    id="nnote" placeholder="Numero de nota">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="note" class="col-lg-2 control-label">Nota</label>
+                            <div class="col-lg-10">
+                                <input type="text" v-model="employee.observaciones[0].nota" class="form-control" id="note"
+                                    placeholder="Nota">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-offset-2 col-lg-10">
+                                <button class="btn btn-primary" v-on:click="addEmployee()">Agregar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            cities: {
+                _id: null,
+                nombre: null
+            },
+            employee: {
+                nombres: null,
+                documentos: null,
+                fechaNacimiento: null,
+                cargo: null,
+                ciudad: null,
+                observaciones: [{
+                    NroNota: null,
+                    nota: null
+                }]
+            },
+            city: null,
+            loader: false,
+        },
+        async mounted() {
+            await this.getCities();
+            // await this.getEmployees();
+        },
+        methods: {
+            getCities: async function () {
+                await axios.get('http://localhost:3000/api/city').then(res => {
+                    this.cities = res.data;
+                    this.loader = true;                    
+                })
+            },
+            addEmployee: async function () {
+                this.employee.ciudad = this.city;
+                axios({
+                    method: "post",
+                    url: "http://localhost:3000/api/employee/",
+                    data: {
+                        nombres: this.employee.nombres,
+                        documentos: this.employee.documentos,
+                        fechaNacimiento: this.employee.fechaNacimiento,
+                        cargo: this.employee.cargo,
+                        ciudad: this.employee.ciudad,
+                        observaciones: this.employee.observaciones
+                    }
+                })
+                .then(res =>{
+                    this.employee = {
+                        nombres: null,
+                        documentos: null,
+                        fechaNacimiento: null,
+                        cargo: null,
+                        ciudad: null,
+                        observaciones: [{
+                            NroNota: null,
+                            nota: null
+                        }]
+                    };
+                    this.city = null;
+                    this.$notify({
+                        title: 'Bien',
+                        message: 'Se ha agredao un nuevo Empleado',
+                        type: 'success'
+                    });
+                })
+                .catch(err =>{
+                    this.$notify.error({
+                        title: 'Error',
+                        message: 'Ops, Intentalo nuevamente'
+                    });
+                })
+            },
+            search: function () {
+                if (this.id_city) {
+                    this.employees = this.employeesAux.filter(item => item.ciudad == this.id_city);
+                    if (this.employees.length > 0) this.viewEmployees = true;
+                } else {
+                    this.employees = [];
+                    this.viewEmployees = false;
+                }
+            }
+        }
+    });
+</script>

@@ -30,12 +30,14 @@ Path.route('/employee')
   .get(EmployeeControll.Getall)
   .post(EmployeeControll.PostAll);
 
-Path.route('/employee/:id')
-  .delete(EmployeeControll.DeleteAll);
-
-
-Path.route('/employee/:city')
+Path.route('/employee/find/:_id')
   .get(EmployeeControll.GetByIdCity)
+  .delete(EmployeeControll.DeleteEmployee);
+  
+
+
+// Path.route('/employee/:city')
+//   .get(EmployeeControll.GetByIdCity)
 //   .put(TVShowCtrl.updateTVShow)
 //   .delete(TVShowCtrl.deleteTVShow);
 

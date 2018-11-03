@@ -52,19 +52,22 @@
         </nav>
     </div> <br /><br /><br /><br /><br />
 
-    <div class="content">
+    <div class="container-fluid">
         <div id="app">
             <div class="row" v-if="load">
-                <div class="col-md-3"></div>
+                <div class="col-md-3">
+                    <div>
+                        <a href="save.html">
+                            <button type="button" class="btn btn-primary">Agregar Empleado</button>
+                        </a>
+                    </div>
+                </div>
                 <div class="col-md-2">
                     <div class="text-para">Seleccione una Sede: </div>
                 </div>
                 <div class="col-md-2">
                     <el-select v-model="id_city" clearable placeholder="Sede">
-                        <el-option v-for="item in cities" 
-                            :key="item._id" 
-                            :label="item.nombre" 
-                            :value="item._id">
+                        <el-option v-for="item in cities" :key="item._id" :label="item.nombre" :value="item._id">
                         </el-option>
                     </el-select>
                 </div>
@@ -73,24 +76,24 @@
                 </div>
                 <div class="col-md-3"></div>
             </div>
-            <br/>
+            <br />
             <div v-if="viewEmployees">
                 <div v-for="item in employees" class="text-employee">
                     <p>Nombre: {{item.nombres}} </p>
                     <p>Documento: {{item.documentos}} </p>
                     <p>Fecha de nacimiento: {{item.fechaNacimiento}} </p>
                     <p>Cargo: {{item.cargo}} </p>
-                    <p>Observaciones:  </p>
-                        <p class="text-padd">N° Nota: {{item.observaciones[0].NroNota}} </p>
-                        <p class="text-padd">Nota : {{item.observaciones[0].nota}} </p>
+                    <p>Observaciones: </p>
+                    <p class="text-padd">N° Nota: {{item.observaciones[0].NroNota}} </p>
+                    <p class="text-padd">Nota : {{item.observaciones[0].nota}} </p>
+                    <button type="button" class="btn btn-warning" v-on:click="edit(item._id)">Editar</button>
+                    <button type="button" class="btn btn-danger" v-on:click="delete(item._id)">Eliminar</button>
                     <hr>
+                    
                 </div>
             </div>
-            
         </div>
-
     </div>
-
 
 
 </body>
@@ -118,21 +121,28 @@
                     this.load = true;
                 })
             },
-            getEmployees: async function(){
-                await axios.get('http://localhost:3000/api/employee').then(res =>{
-                    this.employeesAux =  res.data;
-                    console.log(this.employeesAux);
+            getEmployees: async function () {
+                await axios.get('http://localhost:3000/api/employee').then(res => {
+                    this.employeesAux = res.data;
                 })
             },
-            search: function(){
-                if(this.id_city){
+            search: function () {
+                if (this.id_city) {
                     this.employees = this.employeesAux.filter(item => item.ciudad == this.id_city);
-                    if(this.employees.length > 0) this.viewEmployees = true;
-                }else{
+                    if (this.employees.length > 0) this.viewEmployees = true;
+                } else {
                     this.employees = [];
                     this.viewEmployees = false;
                 }
-            }
+            },
+            edit: function (idEdit) {
+                var id = idEdit;
+                console.log(idEdit);
+            },
+            delete: function (idDelete) {
+                var id = idDelete;
+                console.log(idDelete);
+            },
         }
     });
 </script>
